@@ -31,4 +31,20 @@ app.use(express.urlencoded({ extended: false }));
 
 app.get('/', (req, res) => res.render('index'));
 
+// signup
+app.get('/signup', (req, res) => res.render('sign-up-form'));
+
+app.post('/signup', async (req, res, next) => {
+	try {
+		const user = new User({
+			username: req.body.username,
+			password: req.body.password,
+		});
+		const result = await user.save();
+		res.redirect('/');
+	} catch (error) {
+		return next(error);
+	}
+});
+
 app.listen(3000, () => console.log('app listening on port 3000!'));
