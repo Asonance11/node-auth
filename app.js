@@ -54,11 +54,19 @@ passport.deserializeUser(async (id, done) => {
 	}
 });
 
+app.post(
+	'/log-in',
+	passport.authenticate('local', {
+		successRedirect: '/',
+		failureRedirect: '/',
+	})
+);
+
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(express.urlencoded({ extended: false }));
 
-app.get('/', (req, res) => res.render('index'));
+app.get('/', (req, res) => res.render('index', { user: req.user }));
 
 // signup
 app.get('/signup', (req, res) => res.render('sign-up-form'));
@@ -74,6 +82,23 @@ app.post('/signup', async (req, res, next) => {
 	} catch (error) {
 		return next(error);
 	}
+});
+
+app.post(
+	'/log-in',
+	passport.authenticate('local', {
+		successRedirect: '/',
+		failureRedirect: '/',
+	})
+);
+
+app.get('/log-out', (req, res, next) => {
+	req.logout((err) => {
+		if (err) {
+			return next(err);
+		}
+		res.redirect('/');
+	});
 });
 
 app.listen(3000, () => console.log('app listening on port 3000!'));
