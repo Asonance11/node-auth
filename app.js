@@ -7,6 +7,12 @@ const localStrategy = require('passport-local').Strategy;
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
+const app = express();
+app.use(express.urlencoded({ extended: false }));
+app.use(session({ secret: 'cats', resave: false, saveUninitialized: true }));
+app.use(passport.initialize());
+app.use(passport.session());
+
 const mongoDB = process.env.MONGODB_URL;
 mongoose.connect(mongoDB, { useUnifiedTopology: true, useNewUrlParser: true });
 const db = mongoose.connection;
@@ -46,29 +52,13 @@ passport.deserializeUser(async (id, done) => {
 		done(error);
 	}
 });
-const app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
-
-app.use(session({ secret: 'cats', resave: false, saveUninitialized: true }));
-
-app.post(
-	'/log-in',
-	passport.authenticate('local', {
-		successRedirect: '/',
-		failureRedirect: '/',
-	})
-);
-
-app.use(passport.initialize());
-app.use(passport.session());
-app.use(express.urlencoded({ extended: false }));
 
 app.get('/', (req, res) => res.render('index', { user: req.user }));
 
 // signup
 app.get('/signup', (req, res) => res.render('sign-up-form'));
-
 app.post('/signup', async (req, res, next) => {
 	try {
 		const user = new User({
@@ -81,7 +71,6 @@ app.post('/signup', async (req, res, next) => {
 		return next(error);
 	}
 });
-
 app.post(
 	'/log-in',
 	passport.authenticate('local', {
