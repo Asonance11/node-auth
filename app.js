@@ -19,13 +19,6 @@ const User = mongoose.model(
 		password: { type: String, required: true },
 	})
 );
-
-const app = express();
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs');
-
-app.use(session({ secret: 'cats', resave: false, saveUninitialized: true }));
-
 passport.use(
 	new localStrategy(async (username, password, done) => {
 		try {
@@ -53,6 +46,11 @@ passport.deserializeUser(async (id, done) => {
 		done(error);
 	}
 });
+const app = express();
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'ejs');
+
+app.use(session({ secret: 'cats', resave: false, saveUninitialized: true }));
 
 app.post(
 	'/log-in',

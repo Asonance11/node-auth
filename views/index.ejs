@@ -4,6 +4,7 @@
 		<meta charset="UTF-8" />
 		<title>Home</title>
 	</head>
+
 	<body>
 		<% if (user) {%>
 		<h1>WELCOME BACK <%= user.username %></h1>
@@ -12,9 +13,9 @@
 		<h1>please log in</h1>
 		<form action="/log-in" method="POST">
 			<label for="username">Username</label>
-			<input name="username" placeholder="username" type="text" />
+			<input name="username" placeholder="username" id="username" type="text" />
 			<label for="password">Password</label>
-			<input name="password" type="password" />
+			<input name="password" type="password" id="password" />
 			<button>Log In</button>
 		</form>
 		<%}%>
