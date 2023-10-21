@@ -6,6 +6,7 @@ const passport = require('passport');
 const localStrategy = require('passport-local').Strategy;
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const bcrypt = require('bcryptjs');
 
 const app = express();
 app.use(express.urlencoded({ extended: false }));
@@ -61,9 +62,10 @@ app.get('/', (req, res) => res.render('index', { user: req.user }));
 app.get('/signup', (req, res) => res.render('sign-up-form'));
 app.post('/signup', async (req, res, next) => {
 	try {
+		const hashedPassword = await bcrypt.hash(req.body.password, 10);
 		const user = new User({
 			username: req.body.username,
-			password: req.body.password,
+			password: hashedPassword,
 		});
 		const result = await user.save();
 		res.redirect('/');
