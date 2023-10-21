@@ -31,10 +31,10 @@ passport.use(
 		try {
 			const user = await User.findOne({ username: username });
 			const match = await bcrypt.compare(password, user.password);
-			if (!match) {
+			if (!user) {
 				return done(null, false, { message: 'Incorrect username' });
 			}
-			if (user.password !== password) {
+			if (!match) {
 				return done(null, false, { message: 'Incorrect password' });
 			}
 			return done(null, user);
